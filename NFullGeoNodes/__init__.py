@@ -2,7 +2,7 @@ bl_info = {
     "name": "NFull Geometry Nodes",
     "author": "Nanyin",
     "version": (0, 0),
-    "blender": (3, 6, 0),
+    "blender": (2, 93, 0),
     "location": "",
     "description": "Adds new Geometry Nodes",
     "warning": "",
@@ -67,6 +67,7 @@ class NFullNodeCategory(nodeitems_utils.NodeCategory):
     
 node_categories = [
     NFullNodeCategory("CUSTOMINPUTNODES", "Custom Input NodesYYY", items=[
+        #有多种声明方法，这里是最简单的一种
         nodeitems_utils.NodeItem("TestNode"),
         nodeitems_utils.NodeItem("TestNode02"),
         ]),
@@ -88,4 +89,14 @@ def unregister():
     nodeitems_utils.unregister_node_categories("NFULL_NODES")
     for cls in classes:
         bpy.utils.unregister_class(cls)
+
+# #下面这段可以让插件在文本中运行，进行快速测试
+# if __name__=='__main__':
+#     #测试运行可能会遇到问题，注册类的时候无法覆盖现有的。这里使用try解决
+#     try:
+#         #首先尝试注销现有类别
+#         nodeitems_utils.unregister_node_categories("CUSTOM_NODES")
+#     finally:
+#         #不管成功与否，再次注册。实质上是重新加载现有的。
+#         register()
 
