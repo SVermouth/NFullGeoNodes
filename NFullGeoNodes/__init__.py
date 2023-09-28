@@ -22,14 +22,23 @@ class NFullNode(bpy.types.Node):
     def poll(cls, ntree):
         return ntree.bl_idname == 'NFullNodeTree'
 
-class TestNode(NFullNode):
-    bl_idname = 'TestNode'
-    bl_label = 'Simple Input NodeXXX'
+class GetData(NFullNode):
+    bl_idname = 'GetData'
+    bl_label = 'Get Data'
     bl_icon = 'PLUS'
     
-    intProp = bpy.props.IntProperty()
+    intProp = bpy.props.IntProperty(name="UI01",default= 0)
+
+    my_int_prop: bpy.props.IntProperty(name="My Integer", update = update_node)
     def init(self, context):
-        self.outputs.new('NodeSocketInt', "output")
+        self.inputs.new('NodeSocketFloat',"input")
+        self.outputs.new('NodeSocketFloat', "output")
+
+        self.use_custom_color = True
+        self.color = (1,0,0)
+
+    def update(self):
+        return super().update()
         
     def copy(self, node):
         print("copied node", node)
@@ -38,16 +47,23 @@ class TestNode(NFullNode):
         print("Node removed", self)
         
     def draw_buttons(self, context, layout):
-        layout.prop(self, 'intProp')
+        layout.label(text="dfadaf")
 
-class TestNode02(NFullNode):
-    bl_idname = 'TestNode02'
-    bl_label = 'Simple Input Node02'
+    def update(self):
+        print("Update")
+
+
+
+class PCG_Compute(NFullNode):
+    bl_idname = 'PCG_Compute'
+    bl_label = 'PCG Trans'
     bl_icon = 'PLUS'
     
     intProp = bpy.props.IntProperty()
     def init(self, context):
-        self.outputs.new('NodeSocketInt', "output")
+        super().init(context)
+        self.inputs.new('NodeSocketFloat',"input")
+        self.outputs.new('NodeSocketFloat', "output")
         
     def copy(self, node):
         print("copied node", node)
@@ -66,17 +82,17 @@ class NFullNodeCategory(nodeitems_utils.NodeCategory):
         return context.space_data.tree_type == 'NFullNodeTree'
     
 node_categories = [
-    NFullNodeCategory("CUSTOMINPUTNODES", "Custom Input NodesYYY", items=[
+    NFullNodeCategory("CUSTOMINPUTNODES", "NTestNodes", items=[
         #有多种声明方法，这里是最简单的一种
-        nodeitems_utils.NodeItem("TestNode"),
-        nodeitems_utils.NodeItem("TestNode02"),
+        nodeitems_utils.NodeItem("GetData"),
+        nodeitems_utils.NodeItem("PCG_Compute"),
         ]),
 ]
 
 classes=(
         NFullNodeTree,
-        TestNode,
-        TestNode02,
+        GetData,
+        PCG_Compute,
         )
     
 def register():
